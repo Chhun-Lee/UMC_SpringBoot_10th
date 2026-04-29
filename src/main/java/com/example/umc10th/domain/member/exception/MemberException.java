@@ -1,8 +1,11 @@
 package com.example.umc10th.domain.member.exception;
 
-public class MemberException extends RuntimeException {
+import com.example.umc10th.domain.member.exception.code.MemberErrorCode;
+import com.example.umc10th.global.exception.CustomException;
 
-    public MemberException(String message) {
-        super(message);
+public class MemberException extends CustomException {
+
+    public MemberException(MemberErrorCode errorCode) {
+        super(errorCode);
     }
 }

@@ -1,8 +1,11 @@
 package com.example.umc10th.domain.review.exception;
 
-public class ReviewException extends RuntimeException {
+import com.example.umc10th.domain.review.exception.code.ReviewErrorCode;
+import com.example.umc10th.global.exception.CustomException;
 
-    public ReviewException(String message) {
-        super(message);
+public class ReviewException extends CustomException {
+
+    public ReviewException(ReviewErrorCode errorCode) {
+        super(errorCode);
     }
 }
