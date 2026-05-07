@@ -29,4 +29,8 @@ public class MemberMission extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isCompleted = false;
+
+    public void complete() {
+        this.isCompleted = true;
+    }
 }

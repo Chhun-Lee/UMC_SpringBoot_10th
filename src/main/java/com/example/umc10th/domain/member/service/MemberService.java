@@ -1,9 +1,13 @@
 package com.example.umc10th.domain.member.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.example.umc10th.domain.member.dto.MemberReqDTO;
+import com.example.umc10th.domain.member.dto.MemberResDTO;
 
-@Service
-@RequiredArgsConstructor
-public class MemberService {
+public interface MemberService {
+
+    MemberResDTO.SignUpResultDTO signUp(MemberReqDTO.SignUpDTO request);
+
+    MemberResDTO.HomeDTO getHome(Long memberId, Long locationId);
+
+    MemberResDTO.MemberMissionListDTO getMemberMissions(Long memberId, String status, Long cursor, Integer size);
 }

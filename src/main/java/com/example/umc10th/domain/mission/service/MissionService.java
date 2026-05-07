@@ -1,9 +1,10 @@
 package com.example.umc10th.domain.mission.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.example.umc10th.domain.mission.dto.MissionResDTO;
 
-@Service
-@RequiredArgsConstructor
-public class MissionService {
+public interface MissionService {
+
+    MissionResDTO.AvailableMissionListDTO getAvailableMissions(Long memberId, Long locationId, Long cursor, Integer size);
+
+    MissionResDTO.MissionCompleteResultDTO completeMission(Long memberMissionId);
 }

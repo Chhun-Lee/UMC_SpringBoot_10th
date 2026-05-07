@@ -1,7 +1,8 @@
 package com.example.umc10th.domain.member.controller;
 
 import com.example.umc10th.domain.member.dto.MemberResDTO;
-import com.example.umc10th.domain.member.exception.code.MemberSuccessCode;
+import com.example.umc10th.global.code.status.MemberSuccessCode;
+import com.example.umc10th.domain.member.service.MemberService;
 import com.example.umc10th.global.apiPayload.CustomResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,13 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/members")
 public class MemberController {
 
+    private final MemberService memberService;
+
+    // TODO: 인증 도입 후 SecurityContext에서 memberId를 가져오도록 변경
+    private static final Long TEMP_MEMBER_ID = 1L;
+
     @Operation(summary = "홈 화면 조회", description = "회원 이름, 지역, 포인트, 미션 진행도를 조회합니다.")
     @GetMapping("/home")
     public ResponseEntity<CustomResponse<MemberResDTO.HomeDTO>> getHome(
             @RequestParam(required = false) Long locationId
     ) {
-        // TODO: service 연동
-        MemberResDTO.HomeDTO result = null;
+        MemberResDTO.HomeDTO result = memberService.getHome(TEMP_MEMBER_ID, locationId);
         return CustomResponse.ok(MemberSuccessCode.MEMBER_HOME_OK, result);
     }
 
@@ -35,8 +40,8 @@ public class MemberController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        // TODO: service 연동
-        MemberResDTO.MemberMissionListDTO result = null;
+        MemberResDTO.MemberMissionListDTO result =
+                memberService.getMemberMissions(TEMP_MEMBER_ID, status, cursor, size);
         return CustomResponse.ok(MemberSuccessCode.MEMBER_MISSION_LIST_OK, result);
     }
 }
