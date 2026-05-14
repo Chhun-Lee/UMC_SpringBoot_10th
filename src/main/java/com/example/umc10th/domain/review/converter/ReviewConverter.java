@@ -6,6 +6,7 @@ import com.example.umc10th.domain.review.dto.ReviewReqDTO;
 import com.example.umc10th.domain.review.dto.ReviewResDTO;
 import com.example.umc10th.domain.review.entity.Review;
 import com.example.umc10th.domain.review.entity.ReviewPhoto;
+import com.example.umc10th.domain.review.enums.ReviewSortType;
 
 import java.util.List;
 
@@ -45,6 +46,36 @@ public class ReviewConverter {
                 .star(review.getStar())
                 .content(review.getContent())
                 .photos(photoDTOs)
+                .build();
+    }
+
+    public static ReviewResDTO.MyReviewDTO toMyReviewDTO(Review review) {
+        return ReviewResDTO.MyReviewDTO.builder()
+                .reviewId(review.getId())
+                .shopId(review.getStore().getId())
+                .shopName(review.getStore().getShopName())
+                .star(review.getStar())
+                .content(review.getContent())
+                .createdAt(review.getCreatedAt())
+                .build();
+    }
+
+    public static ReviewResDTO.MyReviewListDTO toMyReviewListDTO(
+            List<Review> reviews,
+            Long nextCursorId,
+            Float nextCursorStar,
+            boolean hasNext,
+            ReviewSortType sort
+    ) {
+        List<ReviewResDTO.MyReviewDTO> reviewDTOs = reviews.stream()
+                .map(ReviewConverter::toMyReviewDTO)
+                .toList();
+        return ReviewResDTO.MyReviewListDTO.builder()
+                .reviews(reviewDTOs)
+                .nextCursorId(nextCursorId)
+                .nextCursorStar(nextCursorStar)
+                .hasNext(hasNext)
+                .sort(sort)
                 .build();
     }
 }

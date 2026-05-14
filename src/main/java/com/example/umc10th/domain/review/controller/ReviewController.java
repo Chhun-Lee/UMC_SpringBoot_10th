@@ -7,6 +7,7 @@ import com.example.umc10th.domain.review.service.ReviewService;
 import com.example.umc10th.global.apiPayload.CustomResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class ReviewController {
     @PostMapping(value = "/{shopId}/reviews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CustomResponse<ReviewResDTO.CreateReviewResultDTO>> createReview(
             @PathVariable Long shopId,
-            @RequestPart("request") ReviewReqDTO.CreateReviewDTO request,
+            @RequestPart("request") @Valid ReviewReqDTO.CreateReviewDTO request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
         ReviewResDTO.CreateReviewResultDTO result =

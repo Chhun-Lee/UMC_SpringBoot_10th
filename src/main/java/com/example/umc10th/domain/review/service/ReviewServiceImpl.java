@@ -11,11 +11,14 @@ import com.example.umc10th.domain.review.dto.ReviewReqDTO;
 import com.example.umc10th.domain.review.dto.ReviewResDTO;
 import com.example.umc10th.domain.review.entity.Review;
 import com.example.umc10th.domain.review.entity.ReviewPhoto;
+import com.example.umc10th.domain.review.enums.ReviewSortType;
 import com.example.umc10th.domain.review.exception.ReviewException;
 import com.example.umc10th.global.code.status.ReviewErrorCode;
 import com.example.umc10th.domain.review.repository.ReviewPhotoRepository;
 import com.example.umc10th.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,5 +77,34 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ReviewException(ReviewErrorCode.PHOTO_UPLOAD_FAILED);
         }
         return "/uploads/reviews/" + original;
+    }
+
+    @Override
+    public ReviewResDTO.MyReviewListDTO getMyReviews(
+            Long memberId, ReviewSortType sort, Long cursorId, Float cursorStar, Integer size
+    ) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        Pageable pageable = PageRequest.of(0, size + 1);
+        List<Review> fetched = (sort == ReviewSortType.STAR)
+                ? reviewRepository.findMyReviewsOrderByStar(memberId, cursorStar, cursorId, pageable)
+                : reviewRepository.findMyReviewsOrderById(memberId, cursorId, pageable);
+
+        boolean hasNext = fetched.size() > size;
+        List<Review> page = hasNext ? fetched.subList(0, size) : fetched;
+
+        Long nextCursorId = null;
+        Float nextCursorStar = null;
+        if (!page.isEmpty()) {
+            Review last = page.get(page.size() - 1);
+            nextCursorId = last.getId();
+            if (sort == ReviewSortType.STAR) {
+                nextCursorStar = last.getStar();
+            }
+        }
+
+        return ReviewConverter.toMyReviewListDTO(page, nextCursorId, nextCursorStar, hasNext, sort);
     }
 }

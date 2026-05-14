@@ -41,4 +41,17 @@ public class MissionResDTO {
         private Long memberMissionId;
         private Boolean isCompleted;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class InProgressMissionListDTO {
+        private List<AvailableMissionDTO> missions;
+        private Integer page;
+        private Integer size;
+        private Long totalElements;
+        private Integer totalPages;
+        private Boolean hasNext;
+    }
 }

@@ -1,7 +1,9 @@
 package com.example.umc10th.domain.mission.repository;
 
 import com.example.umc10th.domain.mission.entity.mapping.MemberMission;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +31,7 @@ public interface MemberMissionRepository extends JpaRepository<MemberMission, Lo
             @Param("cursor") Long cursor,
             Pageable pageable
     );
+
+    @EntityGraph(attributePaths = {"mission", "mission.store"})
+    Page<MemberMission> findByMemberIdAndIsCompletedFalse(Long memberId, Pageable pageable);
 }

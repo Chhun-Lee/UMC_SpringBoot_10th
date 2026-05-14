@@ -4,6 +4,7 @@ import com.example.umc10th.domain.member.exception.MemberException;
 import com.example.umc10th.global.code.status.MemberErrorCode;
 import com.example.umc10th.domain.member.repository.MemberRepository;
 import com.example.umc10th.domain.mission.converter.MissionConverter;
+import com.example.umc10th.domain.mission.dto.MissionReqDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
 import com.example.umc10th.domain.mission.entity.Mission;
 import com.example.umc10th.domain.mission.entity.mapping.MemberMission;
@@ -12,6 +13,7 @@ import com.example.umc10th.global.code.status.MissionErrorCode;
 import com.example.umc10th.domain.mission.repository.MemberMissionRepository;
 import com.example.umc10th.domain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -60,5 +62,21 @@ public class MissionServiceImpl implements MissionService {
         memberMission.complete();
 
         return MissionConverter.toMissionCompleteResultDTO(memberMission);
+    }
+
+    @Override
+    public MissionResDTO.InProgressMissionListDTO getInProgressMissions(
+            MissionReqDTO.InProgressMissionRequestDTO request
+    ) {
+        Long memberId = request.getMemberId();
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Page<MemberMission> page = memberMissionRepository
+                .findByMemberIdAndIsCompletedFalse(memberId, pageable);
+
+        return MissionConverter.toInProgressMissionListDTO(page);
     }
 }
