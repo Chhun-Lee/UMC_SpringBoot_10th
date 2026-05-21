@@ -24,6 +24,7 @@ import com.example.umc10th.domain.mission.repository.MemberMissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +42,17 @@ public class MemberServiceImpl implements MemberService {
     private final MemberTermRepository memberTermRepository;
     private final LocationRepository locationRepository;
     private final MemberMissionRepository memberMissionRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public MemberResDTO.SignUpResultDTO signUp(MemberReqDTO.SignUpDTO request) {
-        Member member = memberRepository.save(MemberConverter.toMember(request));
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        Member member = memberRepository.save(MemberConverter.toMember(request, encodedPassword));
 
         if (request.getPreferFoodIds() != null) {
             for (Long foodId : request.getPreferFoodIds()) {

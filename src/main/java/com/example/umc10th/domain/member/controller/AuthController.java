@@ -7,6 +7,7 @@ import com.example.umc10th.domain.member.service.MemberService;
 import com.example.umc10th.global.apiPayload.CustomResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ public class AuthController {
     @Operation(summary = "회원가입", description = "신규 회원을 등록합니다.")
     @PostMapping("/sign-up")
     public ResponseEntity<CustomResponse<MemberResDTO.SignUpResultDTO>> signUp(
-            @RequestBody MemberReqDTO.SignUpDTO request
+            @Valid @RequestBody MemberReqDTO.SignUpDTO request
     ) {
         MemberResDTO.SignUpResultDTO result = memberService.signUp(request);
         return CustomResponse.ok(MemberSuccessCode.MEMBER_SIGN_UP_CREATED, result);

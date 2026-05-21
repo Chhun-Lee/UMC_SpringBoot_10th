@@ -10,9 +10,11 @@ import java.util.List;
 
 public class MemberConverter {
 
-    public static Member toMember(MemberReqDTO.SignUpDTO request) {
+    public static Member toMember(MemberReqDTO.SignUpDTO request, String encodedPassword) {
         return Member.builder()
                 .name(request.getName())
+                .email(request.getEmail())
+                .password(encodedPassword)
                 .gender(request.getGender())
                 .birth(request.getBirth())
                 .address(request.getAddress())
