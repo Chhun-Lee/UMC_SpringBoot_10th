@@ -30,6 +30,14 @@ public class MemberConverter {
                 .build();
     }
 
+    public static MemberResDTO.LoginResultDTO toLoginResultDTO(Member member, String accessToken) {
+        return MemberResDTO.LoginResultDTO.builder()
+                .memberId(member.getId())
+                .accessToken(accessToken)
+                .tokenType("Bearer")
+                .build();
+    }
+
     public static MemberResDTO.HomeDTO toHomeDTO(Member member, Location location, int completed, int total) {
         return MemberResDTO.HomeDTO.builder()
                 .memberName(member.getName())

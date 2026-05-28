@@ -31,4 +31,13 @@ public class AuthController {
         MemberResDTO.SignUpResultDTO result = memberService.signUp(request);
         return CustomResponse.ok(MemberSuccessCode.MEMBER_SIGN_UP_CREATED, result);
     }
+
+    @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인하고 JWT access token을 발급합니다.")
+    @PostMapping("/login")
+    public ResponseEntity<CustomResponse<MemberResDTO.LoginResultDTO>> login(
+            @Valid @RequestBody MemberReqDTO.LoginDTO request
+    ) {
+        MemberResDTO.LoginResultDTO result = memberService.login(request);
+        return CustomResponse.ok(MemberSuccessCode.MEMBER_LOGIN_OK, result);
+    }
 }

@@ -21,9 +21,12 @@ import com.example.umc10th.domain.mission.exception.MissionException;
 import com.example.umc10th.global.code.status.MissionErrorCode;
 import com.example.umc10th.domain.mission.repository.LocationRepository;
 import com.example.umc10th.domain.mission.repository.MemberMissionRepository;
+import com.example.umc10th.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +46,7 @@ public class MemberServiceImpl implements MemberService {
     private final LocationRepository locationRepository;
     private final MemberMissionRepository memberMissionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional
@@ -77,6 +81,25 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return MemberConverter.toSignUpResultDTO(member);
+    }
+
+    @Override
+    public MemberResDTO.LoginResultDTO login(MemberReqDTO.LoginDTO request) {
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.LOGIN_FAILED));
+
+        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+            throw new MemberException(MemberErrorCode.LOGIN_FAILED);
+        }
+
+        UserDetails userDetails = User.builder()
+                .username(member.getEmail())
+                .password(member.getPassword())
+                .authorities("ROLE_USER")
+                .build();
+        String accessToken = jwtUtil.createAccessToken(userDetails);
+
+        return MemberConverter.toLoginResultDTO(member, accessToken);
     }
 
     @Override

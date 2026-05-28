@@ -62,4 +62,14 @@ public class MemberResDTO {
     public static class SignUpResultDTO {
         private Long memberId;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class LoginResultDTO {
+        private Long memberId;
+        private String accessToken;
+        private String tokenType;
+    }
 }

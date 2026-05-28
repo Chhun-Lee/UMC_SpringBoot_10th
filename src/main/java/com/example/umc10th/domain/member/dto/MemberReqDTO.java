@@ -39,4 +39,18 @@ public class MemberReqDTO {
         private List<Long> preferFoodIds;
         private List<Long> termIds;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class LoginDTO {
+
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        private String email;
+
+        @NotBlank(message = "비밀번호는 필수 입력값입니다.")
+        private String password;
+    }
 }
